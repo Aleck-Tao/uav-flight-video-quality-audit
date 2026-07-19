@@ -1,0 +1,56 @@
+{
+  "clips": [
+    {
+      "clip": "uav_field_test_clip_a.mp4",
+      "codec": "h264",
+      "file_bytes": 18955583,
+      "low_sharpness_cutoff": 20.0,
+      "low_sharpness_samples": 0,
+      "luma_p05": 119.03266143798828,
+      "luma_p95": 140.9714126586914,
+      "max_clipped_fraction": 0.00546875,
+      "max_dark_fraction": 0.04407986111111111,
+      "mean_luma": 128.62091005765475,
+      "mean_temporal_luma_delta": 19.363338012165492,
+      "median_sharpness": 254.5320281982422,
+      "sample_count": 91,
+      "sampled_duration_s": 90.0,
+      "sha256": "c45fcc18dbad8027b7fae698168ba3c4ea3b4f1cf0cb82434508a64339b0ae69",
+      "sharpness_p05": 154.39065551757812,
+      "source_duration_s": 91.33,
+      "source_fps": 30.0,
+      "source_size": [
+        720,
+        1280
+      ]
+    },
+    {
+      "clip": "uav_field_test_clip_b.mp4",
+      "codec": "h264",
+      "file_bytes": 15527012,
+      "low_sharpness_cutoff": 103.13054656982422,
+      "low_sharpness_samples": 2,
+      "luma_p05": 126.54893188476562,
+      "luma_p95": 143.38282775878906,
+      "max_clipped_fraction": 0.010883997204751921,
+      "max_dark_fraction": 0.01937456324248777,
+      "mean_luma": 133.40986260435636,
+      "mean_temporal_luma_delta": 11.818458688078504,
+      "median_sharpness": 216.68617248535156,
+      "sample_count": 133,
+      "sampled_duration_s": 132.0,
+      "sha256": "f9d1801aca295ab77786c55276876780070d101949b01df1aa719b9ca20f962a",
+      "sharpness_p05": 155.49710388183593,
+      "source_duration_s": 132.9,
+      "source_fps": 30.0,
+      "source_size": [
+        544,
+        960
+      ]
+    }
+  ],
+  "method": "1 Hz decoded RGB audit at 180 px width",
+  "sample_hz": 1.0,
+  "tool": "videoaudit 1.0.0",
+  "total_samples": 224
+}

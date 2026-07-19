@@ -1,0 +1,24 @@
+[build-system]
+requires = ["setuptools>=70"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "uav-flight-video-quality-audit"
+version = "1.0.0"
+description = "Reproducible visual-quality and provenance audit for UAV field-test videos"
+readme = "README.md"
+requires-python = ">=3.11"
+license = { file = "LICENSE" }
+authors = [{ name = "Yuanyuan Tao" }]
+dependencies = ["imageio-ffmpeg==0.6.0", "numpy==2.3.5"]
+keywords = ["uav", "computer-vision", "video-quality", "data-provenance", "field-testing"]
+
+[project.scripts]
+videoaudit = "videoaudit.pipeline:main"
+
+[project.urls]
+Repository = "https://github.com/Aleck-Tao/uav-flight-video-quality-audit"
+Portfolio = "https://github.com/Aleck-Tao/computer-vision-autonomous-systems-portfolio"
+
+[tool.setuptools.packages.find]
+include = ["videoaudit*"]

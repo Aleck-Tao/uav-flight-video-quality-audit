@@ -1,0 +1,24 @@
+name: real-video-reproducibility
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test-and-audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: pyproject.toml
+      - name: Install package
+        run: python -m pip install -e .
+      - name: Run metric tests
+        run: python -m unittest discover -s tests -v
+      - name: Reproduce video audit
+        run: videoaudit
+      - name: Verify deterministic artifacts
+        run: git diff --exit-code -- results
