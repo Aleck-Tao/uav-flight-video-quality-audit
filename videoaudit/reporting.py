@@ -87,4 +87,4 @@ def write_timeline(rows: list[FrameMetrics], path: Path) -> None:
             ]
         )
     svg.append("</svg>")
-    path.write_text("\n".join(svg), encoding="utf-8")
+    path.write_text("\n".join(svg) + "\n", encoding="utf-8")
