@@ -1,68 +1,47 @@
 # UAV Flight-Video Quality Audit
 
 [![CI](https://github.com/Aleck-Tao/uav-flight-video-quality-audit/actions/workflows/ci.yml/badge.svg)](https://github.com/Aleck-Tao/uav-flight-video-quality-audit/actions/workflows/ci.yml)
-[![Python 3.12](https://img.shields.io/badge/python-3.12-blue.svg)](https://www.python.org/)
-[![License: MIT](https://img.shields.io/badge/code%20license-MIT-green.svg)](LICENSE)
 
-A reproducible computer-vision data audit over two original outdoor UAV field-test videos. The pipeline decodes the actual MP4 files at 1 Hz and measures exposure, dark/highlight clipping, Laplacian sharpness, and frame-to-frame luminance change.
-
-The research motivation is simple: before field footage is used for perception experiments, its visual quality and provenance should be measured rather than assumed.
+An exposure and sharpness audit of two original outdoor UAV field-test videos. It samples the MP4 files at 1 Hz, resizes frames to 180 pixels wide, and identifies intervals worth inspecting before using the footage in a perception experiment.
 
 ![Video quality timeline](results/timeline.svg)
 
-## Released-video result
+## Findings in the released clips
 
-| Clip | Duration | Samples | Mean luma | Median sharpness | Low-sharpness samples | Max dark | Max clipped |
+| Clip | Duration | Samples | Mean luma | Median sharpness | Low-sharpness samples | Max dark pixels | Max clipped pixels |
 |---|---:|---:|---:|---:|---:|---:|---:|
-| Clip A | 91.33 s | 91 | 128.62 | 254.5 | 0 | 4.41% | 0.55% |
-| Clip B | 132.90 s | 133 | 133.41 | 216.7 | 2 | 1.94% | 1.09% |
+| A | 91.33 s | 91 | 128.62 | 254.5 | 0 | 4.41% | 0.55% |
+| B | 132.90 s | 133 | 133.41 | 216.7 | 2 | 1.94% | 1.09% |
 
-The committed audit covers **224 decoded frames**. Clip B contains two within-clip low-sharpness outliers under the robust rule. Neither clip shows widespread black-frame or highlight-clipping failure at the sampled instants.
+The most useful follow-up is **Clip B around 20–21 seconds**. Its Laplacian variance falls to 100.0 and 90.6, below the within-clip cutoff of 103.1. Mean luma reaches 167.8 at the 20-second sample, and the changes from preceding samples are 46.0 and 44.6 luma units. The coincident changes flag a local visual transition; the metrics alone cannot distinguish motion blur, a change of scene texture, and exposure adjustment.
 
-These are properties of the released evidence videos. They are not claims about autonomous flight, obstacle avoidance, or localization accuracy.
+Across the 224 sampled frames, dark and clipped pixel fractions stay below 4.41% and 1.09%, respectively. There is no widespread black-frame or highlight-clipping failure at these sampled instants. A 1 Hz pass can still miss a brief defect between samples.
 
-## Reproduce
+The table's sharpness values are descriptive, not a ranking of the two cameras or recordings. Laplacian variance responds to texture and resizing as well as focus. Even though both clips are resized to the same width, a scene with more edges can score higher without being more useful for a particular vision task.
+
+The [per-frame measurements](results/frame_metrics.csv) give the timestamps behind these observations. [summary.json](results/summary.json) records the aggregate values, source dimensions, durations and file hashes; [report.md](results/report.md) is the generated summary.
+
+## Run the audit
+
+From a checkout, with Python 3.12:
 
 ```bash
 python -m pip install -e .
-python -m unittest discover -s tests -v
 videoaudit
 ```
 
-The default command reads `data/videos/*.mp4` and writes:
+This reads [data/videos](data/videos/) and regenerates the CSV, JSON, Markdown report and timeline in `results/`. CI runs the same audit and checks the committed output. Metric tests are available with:
 
-- `results/frame_metrics.csv`: one row per decoded sample;
-- `results/summary.json`: container metadata, aggregate metrics, file sizes, and SHA-256 hashes;
-- `results/report.md`: a reviewer-readable result table and interpretation;
-- `results/timeline.svg`: brightness and normalized sharpness across both clips.
-
-The CI workflow reruns the tests and complete video audit, then verifies that every committed result is reproducible.
-
-## Metrics
-
-- **Mean luma:** Rec. 709 weighted RGB brightness on a 0-255 scale.
-- **Dark fraction:** decoded pixels with luma below 16.
-- **Clipped fraction:** decoded pixels with luma above 240.
-- **Sharpness:** variance of a four-neighbour discrete Laplacian, used as a within-resolution blur proxy.
-- **Temporal luma delta:** mean absolute luma difference from the preceding one-second sample.
-- **Low-sharpness sample:** below Q1 - 1.5*IQR for that clip, with a floor of 20.
-
-See [`docs/methodology.md`](docs/methodology.md) for assumptions and interpretation.
-
-## Repository layout
-
-```text
-videoaudit/    decoder, frame metrics, provenance, and reporting
-data/videos/  two original field-test MP4 files
-results/      committed frame CSV, summary JSON, report, and timeline
-tests/        numerical metric tests
-docs/         methodology and evidence boundaries
+```bash
+python -m unittest discover -s tests -v
 ```
 
-## Evidence integrity
+## How the flags are calculated
 
-The raw videos retain their original bytes. `data/videos/MEDIA_MANIFEST.md` records sizes and SHA-256 hashes. The audit summary repeats these hashes, tying every reported metric to a specific input file.
+Luma uses Rec. 709 RGB weights on a 0–255 scale. Pixels below 16 are counted as dark; those above 240 as clipped. Sharpness is the variance of a four-neighbour Laplacian. The low-sharpness cutoff is calculated separately for each clip as `max(20, Q1 − 1.5 × IQR)`; a clip with consistently poor detail may therefore produce few relative outliers. Temporal change is the mean absolute luma difference between consecutive one-second samples, without motion compensation.
 
-Code is MIT licensed. The original video media remain copyright Yuanyuan Tao and are included for academic/research review; see [`MEDIA_NOTICE.md`](MEDIA_NOTICE.md).
+These measurements help select video segments for closer inspection. They describe image quality and do not measure pose error or flight autonomy. Sampling and metric definitions are in [methodology.md](docs/methodology.md).
 
-Related repositories: [research portfolio](https://github.com/Aleck-Tao/computer-vision-autonomous-systems-portfolio), [multi-sensor diagnostics](https://github.com/Aleck-Tao/uav-multisensor-diagnostics), and [safety-constrained mission interface](https://github.com/Aleck-Tao/safety-constrained-uav-mission-interface).
+The original MP4 bytes are preserved; their sizes and hashes are listed in the [media manifest](data/videos/MEDIA_MANIFEST.md). Code is [MIT licensed](LICENSE). Video media remain copyright Yuanyuan Tao and are supplied for academic/research review under the [media notice](MEDIA_NOTICE.md).
+
+Related: [multi-sensor diagnostics](https://github.com/Aleck-Tao/uav-multisensor-diagnostics) · [mission interface](https://github.com/Aleck-Tao/safety-constrained-uav-mission-interface) · [portfolio](https://github.com/Aleck-Tao/computer-vision-autonomous-systems-portfolio).
