@@ -13,7 +13,7 @@
   "max_mean_luma": 167.77471923828125,
   "min_sharpness": 60.33763885498047,
   "output_width_px": 180,
-  "reference_sha256": "ee417be9ed3c33829455ef748e806ce39027a850fb91310c44b6b6d33a230272",
+  "reference_sha256": "492aaabc344969a9e447d1794268522c1e33aa6e420d817e069b5942707f53c9",
   "sample_count": 50,
   "sample_hz": 10.0,
   "snapshots_row_major": [
@@ -49,10 +49,11 @@
     "metrics.py": "bb173685bd2e43d6122dd614d8c259da0d3f741867881c8feed060768fe0519f",
     "pipeline.py": "b94bc19cf24f599ed8de3a39542a812fef9fcdf7aa9b0f8324eeaf0cc128bb7a",
     "reporting.py": "2675886fbfb5ce0f5983ff90c74563fd3eb0d3e3fef3da7f953e2f75501edfc1",
-    "review.py": "e5fc2a619eb9e20b7fbd807acc15891da0dbd0121c394b9f6be5fdbb4350e3cb"
+    "review.py": "edf5c069b0c2429efd17756c2a240f3934f222bc4a2658dd3202b580ea55d63e"
   },
   "source_sha256": "f9d1801aca295ab77786c55276876780070d101949b01df1aa719b9ca20f962a",
   "temporal_delta_interval_s": 0.1,
+  "text_hash_normalization": "CRLF to LF (video hash remains byte-exact)",
   "timestamp_basis": "ffmpeg fps-filter output grid from full-clip decode, not original frame PTS",
   "window_s": [
     18.0,

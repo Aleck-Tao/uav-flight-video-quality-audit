@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import math
 from pathlib import Path
@@ -14,6 +15,11 @@ from .decoder import sampled_rgb_frames
 from .metrics import compute_frame_metrics
 from .pipeline import DEFAULT_VIDEO_DIR, PROJECT_ROOT, _sha256
 from .reporting import write_frame_csv, write_summary, write_timeline
+
+
+def text_sha256(path: Path) -> str:
+    """Hash repository text with Git's LF representation on either platform."""
+    return hashlib.sha256(path.read_bytes().replace(b"\r\n", b"\n")).hexdigest()
 
 
 def png_bytes(frame: np.ndarray) -> bytes:
@@ -90,8 +96,9 @@ def review_window(video: Path, reference: Path, output: Path,
     low = [r.timestamp_s for r in rows if r.sharpness_laplacian_var < cutoff]
     summary = {
         "clip": video.name, "source_sha256": clip["sha256"],
-        "reference_sha256": _sha256(reference),
-        "source_hashes": {p.name: _sha256(p) for p in sorted(Path(__file__).parent.glob("*.py"))},
+        "text_hash_normalization": "CRLF to LF (video hash remains byte-exact)",
+        "reference_sha256": text_sha256(reference),
+        "source_hashes": {p.name: text_sha256(p) for p in sorted(Path(__file__).parent.glob("*.py"))},
         "window_s": [start_s, end_s], "end_exclusive": True,
         "sample_hz": sample_hz, "output_width_px": 180,
         "timestamp_basis": "ffmpeg fps-filter output grid from full-clip decode, not original frame PTS",

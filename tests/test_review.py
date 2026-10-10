@@ -12,10 +12,19 @@ import numpy as np
 
 from videoaudit.decoder import sampled_rgb_frames
 from videoaudit.pipeline import _sha256, audit_videos
-from videoaudit.review import png_bytes, review_window
+from videoaudit.review import png_bytes, review_window, text_sha256
 
 
 class ReviewTests(unittest.TestCase):
+    def test_source_text_hash_normalizes_only_line_endings(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "source.py"
+            path.write_bytes(b"a\r\nb\r\n")
+            windows = text_sha256(path)
+            path.write_bytes(b"a\nb\n")
+            self.assertEqual(windows, text_sha256(path))
+            path.write_bytes(b"a\nc\n")
+            self.assertNotEqual(windows, text_sha256(path))
     def test_invalid_sampling_rates_rejected_before_decode(self):
         for value in (0, -1, float("nan"), float("inf")):
             with self.subTest(value=value), self.assertRaises(ValueError):
