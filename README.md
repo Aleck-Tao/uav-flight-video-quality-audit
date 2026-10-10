@@ -21,6 +21,12 @@ The table's sharpness values are descriptive, not a ranking of the two cameras o
 
 The [per-frame measurements](results/frame_metrics.csv) give the timestamps behind these observations. [summary.json](results/summary.json) records the aggregate values, source dimensions, durations and file hashes; [report.md](results/report.md) is the generated summary.
 
+## Dense review of the flagged window
+
+The [18–23 s follow-up](results/clip-b-review/report.md) samples Clip B at 10 Hz while keeping the original full-clip cutoff fixed. Five of 50 samples fall below that cutoff. The [contact sheet](results/clip-b-review/contact_sheet.png) shows a change from a close view of a laptop screen to the field and then the UAV against the sky. That change in scene content is visible evidence for interpreting the sharpness dip; these metrics cannot isolate motion blur or an exposure mechanism.
+
+The new report includes exact sample times, six decoded frames, per-frame metrics and source hashes. Its 0.1 s temporal differences are not directly comparable with the original 1 s differences. Regenerate with `python -m videoaudit.review`; the original 224-frame audit is unchanged.
+
 ## Run the audit
 
 From a checkout, with Python 3.12:

@@ -52,7 +52,7 @@ def write_report(summary: dict[str, object], path: Path) -> None:
     path.write_text("\n".join(lines), encoding="utf-8")
 
 
-def write_timeline(rows: list[FrameMetrics], path: Path) -> None:
+def write_timeline(rows: list[FrameMetrics], path: Path, start_s: float = 0.0) -> None:
     clips = sorted({row.clip for row in rows})
     width, panel_height = 1000, 250
     height = 70 + panel_height * len(clips)
@@ -67,13 +67,14 @@ def write_timeline(rows: list[FrameMetrics], path: Path) -> None:
         subset = [row for row in rows if row.clip == clip]
         left, top, chart_width, chart_height = 70, 95 + panel * panel_height, 880, 165
         max_time = max(row.timestamp_s for row in subset) or 1.0
+        time_span = max(max_time - start_s, 1e-9)
         max_sharpness = max(row.sharpness_laplacian_var for row in subset) or 1.0
         luma_points = " ".join(
-            f"{left + row.timestamp_s / max_time * chart_width:.1f},{top + chart_height - row.mean_luma / 255.0 * chart_height:.1f}"
+            f"{left + (row.timestamp_s - start_s) / time_span * chart_width:.1f},{top + chart_height - row.mean_luma / 255.0 * chart_height:.1f}"
             for row in subset
         )
         sharpness_points = " ".join(
-            f"{left + row.timestamp_s / max_time * chart_width:.1f},{top + chart_height - row.sharpness_laplacian_var / max_sharpness * chart_height:.1f}"
+            f"{left + (row.timestamp_s - start_s) / time_span * chart_width:.1f},{top + chart_height - row.sharpness_laplacian_var / max_sharpness * chart_height:.1f}"
             for row in subset
         )
         svg.extend(
@@ -82,7 +83,7 @@ def write_timeline(rows: list[FrameMetrics], path: Path) -> None:
                 f'<rect x="{left}" y="{top}" width="{chart_width}" height="{chart_height}" fill="#111c33" stroke="#334155"/>',
                 f'<polyline points="{luma_points}" fill="none" stroke="#38bdf8" stroke-width="2"/>',
                 f'<polyline points="{sharpness_points}" fill="none" stroke="#f59e0b" stroke-width="1.5" opacity="0.85"/>',
-                f'<text x="{left}" y="{top + chart_height + 20}" class="small">0 s</text>',
+                f'<text x="{left}" y="{top + chart_height + 20}" class="small">{start_s:g} s</text>',
                 f'<text x="{left + chart_width}" y="{top + chart_height + 20}" text-anchor="end" class="small">{max_time:.0f} s</text>',
             ]
         )

@@ -1,0 +1,61 @@
+{
+  "clip": "uav_field_test_clip_b.mp4",
+  "end_exclusive": true,
+  "frozen_low_sharpness_cutoff": 103.13054656982422,
+  "low_sharpness_samples": 5,
+  "low_sharpness_times_s": [
+    20.2,
+    20.3,
+    20.4,
+    21.3,
+    21.4
+  ],
+  "max_mean_luma": 167.77471923828125,
+  "min_sharpness": 60.33763885498047,
+  "output_width_px": 180,
+  "reference_sha256": "ee417be9ed3c33829455ef748e806ce39027a850fb91310c44b6b6d33a230272",
+  "sample_count": 50,
+  "sample_hz": 10.0,
+  "snapshots_row_major": [
+    {
+      "file": "frame_018.00s.png",
+      "timestamp_s": 18.0
+    },
+    {
+      "file": "frame_018.90s.png",
+      "timestamp_s": 18.9
+    },
+    {
+      "file": "frame_019.90s.png",
+      "timestamp_s": 19.9
+    },
+    {
+      "file": "frame_020.90s.png",
+      "timestamp_s": 20.9
+    },
+    {
+      "file": "frame_021.90s.png",
+      "timestamp_s": 21.9
+    },
+    {
+      "file": "frame_022.90s.png",
+      "timestamp_s": 22.9
+    }
+  ],
+  "source_hashes": {
+    "__init__.py": "166e351ac94296013f73b9acc20b182bb01f9ddfcaf14b7d1307313afae06cde",
+    "__main__.py": "1cc9641e5463ccf7a7978b7883d4d3e7b23fb82537b919cc98715096739b8078",
+    "decoder.py": "24dc06c940e30f8f495e4eeb94e866f3e979736ba32d2ef0a85d054fb093913d",
+    "metrics.py": "bb173685bd2e43d6122dd614d8c259da0d3f741867881c8feed060768fe0519f",
+    "pipeline.py": "b94bc19cf24f599ed8de3a39542a812fef9fcdf7aa9b0f8324eeaf0cc128bb7a",
+    "reporting.py": "2675886fbfb5ce0f5983ff90c74563fd3eb0d3e3fef3da7f953e2f75501edfc1",
+    "review.py": "e5fc2a619eb9e20b7fbd807acc15891da0dbd0121c394b9f6be5fdbb4350e3cb"
+  },
+  "source_sha256": "f9d1801aca295ab77786c55276876780070d101949b01df1aa719b9ca20f962a",
+  "temporal_delta_interval_s": 0.1,
+  "timestamp_basis": "ffmpeg fps-filter output grid from full-clip decode, not original frame PTS",
+  "window_s": [
+    18.0,
+    23.0
+  ]
+}

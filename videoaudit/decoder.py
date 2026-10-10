@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import math
 from collections.abc import Iterator
 from pathlib import Path
 from typing import Any
@@ -13,8 +14,8 @@ def sampled_rgb_frames(
     sample_hz: float = 1.0,
     output_width: int = 180,
 ) -> tuple[dict[str, Any], Iterator[tuple[int, float, np.ndarray]]]:
-    if sample_hz <= 0:
-        raise ValueError("sample_hz must be positive")
+    if not math.isfinite(sample_hz) or sample_hz <= 0:
+        raise ValueError("sample_hz must be finite and positive")
     generator = read_frames(
         str(path),
         pix_fmt="rgb24",
@@ -24,8 +25,11 @@ def sampled_rgb_frames(
     width, height = metadata["size"]
 
     def iterator() -> Iterator[tuple[int, float, np.ndarray]]:
-        for index, payload in enumerate(generator):
-            frame = np.frombuffer(payload, dtype=np.uint8).reshape((height, width, 3))
-            yield index, index / sample_hz, frame
+        try:
+            for index, payload in enumerate(generator):
+                frame = np.frombuffer(payload, dtype=np.uint8).reshape((height, width, 3))
+                yield index, index / sample_hz, frame
+        finally:
+            generator.close()
 
     return metadata, iterator()

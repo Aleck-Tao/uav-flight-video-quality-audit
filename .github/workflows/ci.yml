@@ -3,6 +3,12 @@ name: real-video-reproducibility
 on:
   push:
   pull_request:
+  workflow_dispatch:
+  schedule:
+    - cron: "13 2 * * 1"
+
+permissions:
+  contents: read
 
 jobs:
   test-and-audit:
@@ -21,4 +27,6 @@ jobs:
       - name: Reproduce video audit
         run: videoaudit
       - name: Verify deterministic artifacts
+        run: python -m videoaudit.review
+      - name: Compare both audits
         run: git diff --exit-code -- results

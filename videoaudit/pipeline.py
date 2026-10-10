@@ -54,7 +54,7 @@ def audit_videos(video_dir: Path, output_dir: Path, sample_hz: float = 1.0) -> d
 
     summary: dict[str, object] = {
         "tool": "videoaudit 1.0.0",
-        "method": "1 Hz decoded RGB audit at 180 px width",
+        "method": f"{sample_hz:g} Hz decoded RGB audit at 180 px width",
         "sample_hz": sample_hz,
         "total_samples": len(all_rows),
         "clips": clip_summaries,
